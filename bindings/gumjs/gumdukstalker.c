@@ -750,7 +750,7 @@ static void
 gum_duk_callback_transformer_transform_block (
     GumStalkerTransformer * transformer,
     GumStalkerIterator * iterator,
-    GumStalkerWriter * output)
+    GumStalkerOutput * output)
 {
   GumDukCallbackTransformer * self =
       GUM_DUK_CALLBACK_TRANSFORMER_CAST (transformer);
@@ -768,8 +768,7 @@ gum_duk_callback_transformer_transform_block (
 
   iterator_value = gum_duk_stalker_obtain_iterator (module);
   output_value = &iterator_value->parent;
-  _gum_duk_native_writer_reset (output_value,
-      (GumDukNativeWriterImpl *) output);
+  _gum_duk_native_writer_reset (output_value, output->writer.instance);
   gum_duk_stalker_iterator_reset (iterator_value, iterator);
 
   duk_push_heapptr (ctx, self->callback);

@@ -731,7 +731,7 @@ static void
 gum_v8_callback_transformer_transform_block (
     GumStalkerTransformer * transformer,
     GumStalkerIterator * iterator,
-    GumStalkerWriter * output)
+    GumStalkerOutput * output)
 {
   GumV8SystemErrorPreservationScope error_scope;
 
@@ -749,7 +749,8 @@ gum_v8_callback_transformer_transform_block (
 
     auto iter_value = gum_v8_stalker_obtain_iterator (module);
     auto output_value = &iter_value->parent;
-    _gum_v8_native_writer_reset (output_value, (GumV8NativeWriterImpl *) output);
+    _gum_v8_native_writer_reset (output_value,
+        (GumV8NativeWriterImpl *) output->writer.instance);
     gum_v8_stalker_iterator_reset (iter_value, iterator);
     auto iter_object = Local<Object>::New (isolate, *output_value->object);
 

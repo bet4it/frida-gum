@@ -96,7 +96,7 @@ def generate_umbrella(runtime, name, section, flavor_combos):
             ])
             current_arch = arch
         lines.append("# include \"gum{0}code{1}{2}-{3}.inc\"".format(runtime, name, section, flavor))
-        if section == "-methods" and flavor != "arm":
+        if section == "-methods" and flavor != "thumb":
             native_function_prefix = "gum_{0}_native_{1}".format(runtime, name)
             wrapper_function_prefix = "gum_{0}_{1}_{2}".format(runtime, flavor, name)
             impl_function_prefix = "gum_{0}_{1}".format(flavor, name)

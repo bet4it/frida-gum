@@ -98,7 +98,7 @@ struct _GumExecCtx
 
   GumStalkerTransformer * transformer;
   void (* transform_block_impl) (GumStalkerTransformer * self,
-      GumStalkerIterator * iterator, GumStalkerWriter * output);
+      GumStalkerIterator * iterator, GumStalkerOutput * output);
   GQueue callout_entries;
   GumSpinlock callout_lock;
   GumEventSink * sink;
@@ -1203,6 +1203,7 @@ gum_exec_ctx_obtain_arm_block_for (GumExecCtx * ctx,
   GumArmRelocator * rl;
   GumGeneratorContext gc;
   GumStalkerIterator iterator;
+  GumStalkerOutput output;
   gboolean all_labels_resolved;
 
   block = gum_exec_block_obtain (ctx, real_address, code_address_ptr);
@@ -1237,10 +1238,12 @@ gum_exec_ctx_obtain_arm_block_for (GumExecCtx * ctx,
   iterator.instruction.begin = NULL;
   iterator.instruction.end = NULL;
 
+  output.writer.arm = cw;
+  output.encoding = GUM_INSTRUCTION_DEFAULT;
+
   ctx->pending_calls++;
 
-  ctx->transform_block_impl (ctx->transformer, &iterator,
-      (GumStalkerWriter *) cw);
+  ctx->transform_block_impl (ctx->transformer, &iterator, &output);
 
   ctx->pending_calls--;
 
@@ -1280,6 +1283,7 @@ gum_exec_ctx_obtain_thumb_block_for (GumExecCtx * ctx,
   GumThumbRelocator * rl;
   GumGeneratorContext gc;
   GumStalkerIterator iterator;
+  GumStalkerOutput output;
   gboolean all_labels_resolved;
 
   block = gum_exec_block_obtain (ctx, real_address, code_address_ptr);
@@ -1315,10 +1319,12 @@ gum_exec_ctx_obtain_thumb_block_for (GumExecCtx * ctx,
   iterator.instruction.begin = NULL;
   iterator.instruction.end = NULL;
 
+  output.writer.thumb = cw;
+  output.encoding = GUM_INSTRUCTION_SPECIAL;
+
   ctx->pending_calls++;
 
-  ctx->transform_block_impl (ctx->transformer, &iterator,
-      (GumStalkerWriter *) cw);
+  ctx->transform_block_impl (ctx->transformer, &iterator, &output);
 
   ctx->pending_calls--;
 
